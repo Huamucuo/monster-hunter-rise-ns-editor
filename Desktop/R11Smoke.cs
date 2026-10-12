@@ -72,7 +72,14 @@ internal static class R11Smoke
                     interact(dialog);
                 }
                 catch (Exception e) { failure = e; }
-                finally { if (!dialog.IsDisposed) { dialog.DialogResult = DialogResult.Cancel; dialog.Close(); } }
+                finally
+                {
+                    if (!dialog.IsDisposed && dialog.DialogResult == DialogResult.None)
+                    {
+                        dialog.DialogResult = DialogResult.Cancel;
+                        dialog.Close();
+                    }
+                }
             };
             timer.Start();
             launch.PerformClick();
@@ -211,6 +218,32 @@ internal static class R11Smoke
                     if (!EquipmentCopyPresentation.FullyInside(action))
                         throw new Exception("Whole Build action is outside its fixed footer");
                     Render(build, $"{language}-{size.Width}-build.png");
+                    var planner = (BuildPlanner)typeof(BuildForm).GetField("model", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(build)!;
+                    var detail = (TextBox)typeof(BuildForm).GetField("details", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(build)!;
+                    var visibleRows = new List<object>();
+                    foreach (var position in Enum.GetValues<BuildPosition>())
+                    {
+                        uint expectedId = 101u + (uint)position;
+                        uint expectedType = position == BuildPosition.Weapon ? 1u : position == BuildPosition.Talisman ? 3u : 2u;
+                        var planned = planner.Piece(position);
+                        string visible = positions.Items[(int)position]?.ToString() ?? "";
+                        if (planned?.Template is not OwnedTemplateSelection owned || planned.Talisman is not null ||
+                            planned.Id != expectedId || owned.Id != expectedId || owned.Type != expectedType || owned.RecordIndex != (int)position ||
+                            !visible.Contains("ID " + expectedId))
+                            throw new Exception($"Confirmed {position} owned-template state does not match its visible Build row: {visible}");
+                        positions.SelectedIndex = (int)position;
+                        Application.DoEvents();
+                        if (!detail.Text.Contains(language == "en" ? "ORIGINAL OWNED TEMPLATE" : "原始已有模板") || !detail.Text.Contains("ID " + expectedId))
+                            throw new Exception($"Confirmed {position} owned-template state does not match its visible detail");
+                        visibleRows.Add(new
+                        {
+                            position,
+                            id = expectedId,
+                            ownedTemplate = true,
+                            visible
+                        });
+                    }
+                    File.WriteAllText(Path.Combine(folder, $"{language}-{size.Width}-visible-build-rows.json"), JsonSerializer.Serialize(visibleRows, new JsonSerializerOptions { WriteIndented = true }));
                     int occupied = Model(form).Domain!.Equipment().Count(e => e.Type is 1 or 2 or 3);
                     DriveModal(action, "EquipmentSetConfirmation", confirmation =>
                     {
