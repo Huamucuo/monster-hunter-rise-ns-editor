@@ -6,7 +6,7 @@ namespace FreshFoundation;
 public sealed record StructureSummary(int Records, int ValueEvents, int MaximumDepth, int ConsumedCoordinate, int StringCount, int NonzeroPaddingBytes, int TrailingZeroBytes, IReadOnlyDictionary<int,int> TagCounts, IReadOnlyDictionary<string,int> WidthCounts, IReadOnlyDictionary<uint,int> ArrayModes);
 // Coordinates refer to the original 12-byte prefix plus the structural payload,
 // irrespective of compressed wrapper placement. Implied object events consume no tag.
-public readonly record struct StructuralEvent(int Coordinate, int EndCoordinate, int Tag, int Depth, uint? Identifier, uint? ClassIdentifier, uint? Width, uint? Count, uint? Mode, bool ImpliedTag, int? DataCoordinate = null);
+public readonly record struct StructuralEvent(int Coordinate, int EndCoordinate, int Tag, int Depth, uint? Identifier, uint? ClassIdentifier, uint? Width, uint? Count, uint? Mode, bool ImpliedTag, int? DataCoordinate = null, int? ElementTag = null);
 public sealed class StructuralReading
 {
     private readonly byte[] payload;
@@ -66,11 +66,13 @@ internal sealed class StructureWalker
         int start=Coordinate,index=Begin(tag,depth);
         uint? width=null,count=null,mode=null;
         int? dataCoordinate=null;
+        int? arrayElementTag=null;
         switch(tag)
         {
             case -1:
                 Align(4);
                 int elementTag=unchecked((int)Word());uint elementWidth=Word();uint elements=Word();uint arrayMode=Word();
+                arrayElementTag=elementTag;
                 if(elements>ArrayLimit)throw Bad("Array element policy exceeded");
                 if(arrayMode>1)throw Bad("Unknown array mode");
                 modes[arrayMode]=modes.GetValueOrDefault(arrayMode)+1;
@@ -95,7 +97,7 @@ internal sealed class StructureWalker
                 ValidateTagWidth(tag,w);Align(w);dataCoordinate=Coordinate;Take(checked((int)w));width=w;
                 var key=$"{tag}:{w}";widths[key]=widths.GetValueOrDefault(key)+1;break;
         }
-        events[index]=new(start,Coordinate,tag,depth,id,null,width,count,mode,implied,dataCoordinate);
+        events[index]=new(start,Coordinate,tag,depth,id,null,width,count,mode,implied,dataCoordinate,arrayElementTag);
     }
     private static void ValidateArrayPrefix(int tag,uint width,uint count,uint mode)
     {

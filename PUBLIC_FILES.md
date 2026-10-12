@@ -1,9 +1,14 @@
-# Explicit public preview attachments
+# Public source attachments — R11
 
-Only the files below belong to this unpublished, source-only review candidate. This is a proposed NEW public-history snapshot, not the existing R10 Git history. Actual catalogs, private files, old test reports, generated outputs and Git objects are excluded. The original local history remains intact.
+This is the source-only R11 update to the existing public repository. The maintainer's explicit feature-development and GitHub synchronization request authorizes this reviewed source update. It does not authorize game operation, a binary Release, excluded catalogs, or an import of the original private Git history.
 
-The digest manifest is generated from this exact file list. `MANIFEST.sha256.json` excludes its own digest to avoid circularity. Historical source/input records preserve their original scopes and do not replace this candidate manifest.
+The files listed below form the exact source attachment set. Actual catalogs, saves, exported bundles/backups, player data, private reports/paths, raw resources, reference archives, screenshots, build caches, PDBs and executable files remain excluded. The original projects and local histories remain preserved separately.
 
+`MANIFEST.sha256.json` hashes all listed attachments except itself. The manifest's reviewed feature-commit reference binds the implementation before this packaging update; it is not a circular claim to hash its own commit. Historical `source-snapshot-*.json` and `spec-inputs-*.json` keep their original scopes. They identify bytes and inputs, not blanket ownership or native-game acceptance.
+
+Own-code MIT, full third-party notices and the historical REE/GPT disclosures remain in this set. R11 writes remain WRITE_EXPERIMENTAL and their game-validation rows remain NOT_TESTED.
+
+- `.editorconfig`
 - `.gitattributes`
 - `.github/workflows/source-checks.yml`
 - `.gitignore`
@@ -23,10 +28,12 @@ The digest manifest is generated from this exact file list. `MANIFEST.sha256.jso
 - `Desktop/CatalogForm.cs`
 - `Desktop/ChangesForm.cs`
 - `Desktop/DomainPages.cs`
+- `Desktop/EquipmentAddForm.cs`
 - `Desktop/EquipmentDraftForm.cs`
 - `Desktop/Program.cs`
 - `Desktop/R10ReviewSmoke.cs`
 - `Desktop/R10Smoke.cs`
+- `Desktop/R11Smoke.cs`
 - `Desktop/R9Smoke.cs`
 - `Desktop/RiseWorkshop.csproj`
 - `Desktop/UiLanguage.cs`
@@ -37,6 +44,7 @@ The digest manifest is generated from this exact file list. `MANIFEST.sha256.jso
 - `EditorWorkspace.cs`
 - `Envelope.cs`
 - `EquipmentEditing.cs`
+- `EquipmentTemplates.cs`
 - `ExperimentalExport.cs`
 - `FEATURE_MATRIX.md`
 - `Foundation.csproj`
@@ -46,6 +54,7 @@ The digest manifest is generated from this exact file list. `MANIFEST.sha256.jso
 - `GameValidation.cs`
 - `HistoryChecks.cs`
 - `IMPLEMENTATION_NOTES.md`
+- `IMPLEMENTATION_NOTES_R11.md`
 - `IMPLEMENTATION_NOTES_R2.md`
 - `IMPLEMENTATION_NOTES_R3.md`
 - `IMPLEMENTATION_NOTES_R4.md`
@@ -54,6 +63,7 @@ The digest manifest is generated from this exact file list. `MANIFEST.sha256.jso
 - `LICENSE-PROPOSAL.md`
 - `LOCAL_EXTRACTION_RESEARCH.md`
 - `MANIFEST.sha256.json`
+- `NameEditing.cs`
 - `PREPARATION_VALIDATION.md`
 - `PROVENANCE.md`
 - `PUBLICATION_BOUNDARY.md`
@@ -62,6 +72,9 @@ The digest manifest is generated from this exact file list. `MANIFEST.sha256.jso
 - `Program.cs`
 - `ProviderChecks.cs`
 - `R10Checks.cs`
+- `R11Checks.cs`
+- `R11SyntheticSamples.cs`
+- `R11_VALIDATION.md`
 - `R2Checks.cs`
 - `R3Checks.cs`
 - `R4Checks.cs`
@@ -82,6 +95,9 @@ The digest manifest is generated from this exact file list. `MANIFEST.sha256.jso
 - `data/mhrice/README.md`
 - `data/mhrice/parameter-sources.json`
 - `data/mhrice/source-hashes.json`
+- `docs/specs/r11/BEHAVIOR.md`
+- `docs/specs/r11/FACTS.md`
+- `docs/specs/r11/TESTS.md`
 - `licenses/MHRice-MIT.txt`
 - `source-snapshot-catalog.json`
 - `source-snapshot-language.json`
@@ -96,6 +112,7 @@ The digest manifest is generated from this exact file list. `MANIFEST.sha256.jso
 - `spec-inputs-mhrice.json`
 - `spec-inputs-r10-review.json`
 - `spec-inputs-r10.json`
+- `spec-inputs-r11.json`
 - `spec-inputs-r2.json`
 - `spec-inputs-r3.json`
 - `spec-inputs-r4.json`

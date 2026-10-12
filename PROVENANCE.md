@@ -22,6 +22,14 @@ MurmurHash3 x86_32 is Austin Appleby's existing public-domain algorithm; it is n
 
 The maintainer approved the own-code MIT grant on 2026-10-12 for material the publisher is entitled to license; third-party and game-content boundaries remain separate. Neither the old engineering disposition labels nor a lexical no-match result supplies blanket legal clearance. No all-original, zero-risk or stable-release claim is made.
 
-## Preparation changes
+## Historical public-preview preparation
 
 Application `.cs` bytes, synthetic fixture builders and separate third-party notice bytes are preserved. Changes are limited to public documentation, ignore/publishing guards, SHA-pinned test CI and optional-resource copy conditions in `Desktop/RiseWorkshop.csproj`. Two local commit-email strings are omitted from this copy of ISOLATION_LOG.md; actor attribution and the procedural record remain, with original bytes retained locally. No game operation, private save access, actual-save export workflow, console validation or application UI was run during this preparation. Focused checks generate/export only their own synthetic fixtures.
+
+## R11 offline application implementation
+
+Explicit maintainer authorization on 2026-10-12 resumed offline name/template-add/whole-Build development and reviewed GitHub synchronization. The independent implementation extends public baseline `87a695c` using only the three unchanged reviewed packets in `docs/specs/r11` and the current independent application. `spec-inputs-r11.json` records those input identities; earlier input/snapshot manifests and the historical preparation account above remain intact.
+
+The implementation role did not access private saves, probes, other research folders, game catalogs, REE, legacy implementation/tests or archives. Newly generated synthetic structures exercise software behavior and actual desktop controls. Root review separately owns private-input regression and byte comparisons; private evidence is excluded from public attachments. Native-device testing remains unavailable while the NS is on loan, and every new gameplay writer remains WRITE_EXPERIMENTAL/NOT_TESTED.
+
+The packet author had historical REE-field hypothesis exposure, and procedural isolation still shares machine/model capabilities. This is not independent historical discovery, strict clean-room certification, blanket originality, authorship clearance or proof of game-valid cloned instances. OpenAI Codex / GPT assistance, the own-code MIT grant, separate full MHRice MIT notice and game-content exclusions remain unchanged. No external code, dependency, asset or catalog was imported for R11.

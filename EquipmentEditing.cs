@@ -5,6 +5,7 @@ public sealed partial class DomainEditor
     internal string ChangeLabel(int index)
     {
         if(index==money)return "Money";if(index==points)return "Points";
+        if(IsOwnerNameField(index))return "Name / local owner";
         for(int i=0;i<inventory.Count;i++){if(inventory[i].id==index)return $"Inventory {i} / ID";if(inventory[i].count==index)return $"Inventory {i} / Quantity";}
         for(int i=0;i<equipment.Count;i++){try{if(PrimitiveArray(equipment[i].node,4129230907,3,1,4).Contains(index))return $"Equipment {i} / Decoration ID";}catch(InvalidDataException){}try{var pair=PairFields(i);if(pair.ids.Contains(index))return $"Talisman {i} / Skill ID";if(pair.levels.Contains(index))return $"Talisman {i} / Skill level";}catch(Exception e)when(e is InvalidDataException or InvalidOperationException){}}
         return "Raw / opaque (read-only)";

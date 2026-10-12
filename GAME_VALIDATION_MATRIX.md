@@ -1,4 +1,4 @@
-> Public-preview packaging note (2026-10-12): This original R10 record is retained for provenance and feature/evidence history. Actual catalog content, historical local test reports and Git history are excluded from this unpublished snapshot. Device-dependent development and validation are paused. Current attachment hashes and fresh preparation checks are recorded in MANIFEST.sha256.json and PREPARATION_VALIDATION.md.
+> R11 update (2026-10-12): Offline software work resumed by explicit request; native-device testing remains unavailable while the NS is on loan. The R6/R9 records below retain their original evidence states. Fresh software tests, UI smoke and byte checks do not represent native game load/effect/resave acceptance.
 
 # Game validation matrix
 
@@ -35,3 +35,26 @@ Local run artifacts and Chinese steps contain user data and stay outside this re
 | Talisman combined two-pair and decoration draft | NOT_TESTED | Pending | Pending | Pending | Pending |
 
 R9 synthetic and reviewer byte checks are software evidence only; these new rows have no native-game report. Prior R6 EXPORTED evidence is preserved.
+
+## R11 new experimental writes (2026-10-12)
+
+| Operation | Status | Game load | Effect | Native resave | Editor reload of native resave |
+|---|---|---|---|---|---|
+| Name rename with two local mirrors and linked system preview | NOT_TESTED | Pending | Pending | Pending | Pending |
+| Original weapon template copies to empty box records | NOT_TESTED | Pending | Pending | Pending | Pending |
+| Original armor template copies to empty box records | NOT_TESTED | Pending | Pending | Pending | Pending |
+| Original talisman template copies with copied pairs/opaque fields | NOT_TESTED | Pending | Pending | Pending | Pending |
+| Whole seven-piece template Build to box | NOT_TESTED | Pending | Pending | Pending | Pending |
+| Six-piece Build with None talisman | NOT_TESTED | Pending | Pending | Pending | Pending |
+
+No native acceptance evidence has been received for these rows. Software export/reload, independent byte comparison and visible controls do not move them to EXPORTED or GAME_LOAD_OK in the native matrix.
+
+The current private regression exports are engineering samples for source/output comparison, not a formal device-acceptance bundle delivered to the user. They remain private and do not change the NOT_TESTED native states.
+
+### Manual acceptance after a separately authorized device session
+
+1. Identify the exact platform/game version and test a separate untouched baseline bundle first. Retain its hashes and all originals; do not attach the bundle publicly.
+2. Rename a selected character through the draft and Apply action. Use separate long, short, CJK and non-BMP cases within the documented application policy. In directory mode, export the linked slot/system copies; check the selected owner name and slot preview, other characters/cards, native save success and the re-read native bundle. Explicit single-file use requires its own narrower mirror-limitation case.
+3. For weapon, armor and talisman separately, choose an original owned source, add one copy into a previewed empty record, and export a new copy. Check box count, copied source configuration, default cleared decoration references, opaque-instance effects and unchanged original source record. Test the explicit decoration-copy option separately. Verify intended effect, successful native resave and editor re-read; record any rejected or duplicated-instance behavior as failure.
+4. Choose explicit original templates for all seven Build positions, preview every source/destination, and add the set as one action. In the game verify every copy in the equipment box and that current worn gear was not switched. Repeat a separate six-piece case with None talisman. Complete native resave and editor reload for the complete set; one accepted piece does not validate the remaining pieces.
+5. Record observations, exact source/implementation hashes and per-operation success/failure without promoting other IDs, configurations, mirrors or versions. Unconfirmed answers stay pending. Virtual socket output, fresh unowned identities and augmentation remain unsupported rather than device-test candidates.

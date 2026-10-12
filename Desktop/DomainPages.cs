@@ -18,6 +18,12 @@ internal sealed class DomainPages : UserControl
     private readonly NumericUpDown money=new(){Maximum=int.MaxValue,Width=150,ThousandsSeparator=true};
     private readonly NumericUpDown points=new(){Maximum=uint.MaxValue,Width=150,ThousandsSeparator=true};
     private readonly Button moneyApply=new(){Text="Stage money",AutoSize=true},pointsApply=new(){Text="Stage points",AutoSize=true};
+    private readonly TextBox nameDraft=new(){Name="NameDraft",Width=420};
+    private readonly Button nameApply=new(){Name="NameApply",Text="Apply name",AutoSize=true};
+    private readonly Button nameReset=new(){Name="NameReset",Text="Reset name draft",AutoSize=true};
+    private readonly Label nameWarning=new(){Name="NameMirrorWarning",AutoSize=true};
+    private bool nameDraftDirty,loadingNameDraft;
+    private string? nameSourceDigest;
     private readonly DataGridView inventory=Grid(),equipment=Grid();
     private readonly TextBox itemFilter=new(){PlaceholderText="Name or numeric ID",Width=200},equipmentFilter=new(){PlaceholderText="Name or numeric ID",Width=180};
     private readonly CheckBox showEmpty=new(){Text="Show empty records",Checked=false,AutoSize=true};
@@ -34,6 +40,37 @@ internal sealed class DomainPages : UserControl
         var charPage=new TabPage("Character / currency");tabs.TabPages.Add(charPage);var charFlow=new TableLayoutPanel(){Tag="Canvas",Dock=DockStyle.Fill,ColumnCount=2,RowCount=1,AutoScroll=true,Padding=new Padding(12)};charPage.Controls.Add(charFlow);
         charFlow.BackColor=WorkshopStyle.Canvas;var m=new FlowLayoutPanel(){AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,WrapContents=true,MaximumSize=new Size(330,0)};m.Controls.AddRange([money,moneyApply]);var p=new FlowLayoutPanel(){AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,WrapContents=true,MaximumSize=new Size(330,0)};p.Controls.AddRange([points,pointsApply]);var profile=WorkshopStyle.Card("Character overview",character);var currency=WorkshopStyle.Card("Currency",new Label(){AutoSize=true,Text="Money"},m,new Label(){AutoSize=true,Text="Points"},p);charFlow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,50));charFlow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,50));profile.Dock=currency.Dock=DockStyle.Top;profile.Margin=new Padding(0,0,10,0);currency.Margin=new Padding(0);charFlow.Controls.Add(profile,0,0);charFlow.Controls.Add(currency,1,0);charFlow.SizeChanged+=(_,_)=>{character.MaximumSize=new Size(Math.Max(240,charFlow.ClientSize.Width/2-72),0);};
         moneyApply.Click+=(_,_)=>Change(()=>editor!.SetMoney((int)money.Value));pointsApply.Click+=(_,_)=>Change(()=>editor!.ApplyDomain(d=>d.SetPoints((uint)points.Value)));
+        var characterShell=new TableLayoutPanel(){Dock=DockStyle.Fill,ColumnCount=1,RowCount=2};
+        characterShell.RowStyles.Add(new(SizeType.Percent,100));
+        characterShell.RowStyles.Add(new(SizeType.AutoSize));
+        charPage.Controls.Remove(charFlow);
+        charPage.Controls.Add(characterShell);
+        characterShell.Controls.Add(charFlow,0,0);
+        charFlow.RowCount=2;
+        charFlow.RowStyles.Add(new(SizeType.AutoSize));
+        charFlow.RowStyles.Add(new(SizeType.AutoSize));
+        var namePolicy=new Label(){AutoSize=true,MaximumSize=new(800,0),Text="Experimental rename: 1–16 UTF-16 units is a conservative application policy, not a verified game maximum. Applied text is preserved exactly. Ranks remain read-only."};
+        var nameCard=WorkshopStyle.Card("Character name draft",nameDraft,namePolicy);
+        nameCard.Dock=DockStyle.Top;
+        nameCard.Margin=new Padding(0,0,0,14);
+        charFlow.Controls.Add(nameCard,0,1);
+        charFlow.SetColumnSpan(nameCard,2);
+        // The draft is the primary character action and must be visible before
+        // long optional overview/availability details at the minimum size.
+        charFlow.SetCellPosition(nameCard,new(0,0));
+        charFlow.SetCellPosition(profile,new(0,1));
+        charFlow.SetCellPosition(currency,new(1,1));
+        var nameFooter=new TableLayoutPanel(){Dock=DockStyle.Fill,AutoSize=true,ColumnCount=1,Padding=new(12,8,12,8)};
+        var nameActions=new FlowLayoutPanel(){AutoSize=true,Dock=DockStyle.Fill,WrapContents=true};
+        nameActions.Controls.AddRange([nameApply,nameReset]);
+        nameFooter.Controls.Add(nameWarning,0,0);
+        nameFooter.Controls.Add(nameActions,0,1);
+        characterShell.Controls.Add(nameFooter,0,1);
+        nameFooter.SizeChanged+=(_,_)=>nameWarning.MaximumSize=new(Math.Max(200,nameFooter.ClientSize.Width-32),0);
+        charFlow.SizeChanged+=(_,_)=>{nameDraft.Width=Math.Max(200,charFlow.ClientSize.Width-76);namePolicy.MaximumSize=new(Math.Max(200,charFlow.ClientSize.Width-76),0);};
+        nameDraft.TextChanged+=(_,_)=>{if(!loadingNameDraft)nameDraftDirty=true;};
+        nameApply.Click+=(_,_)=>Change(()=>{editor!.SetName(nameDraft.Text);nameDraftDirty=false;});
+        nameReset.Click+=(_,_)=>{nameDraftDirty=false;RefreshNameDraft();};
         var items=new TabPage("Inventory");tabs.TabPages.Add(items);var itemPanel=Panel();items.Controls.Add(itemPanel);var itemTools=new FlowLayoutPanel(){Dock=DockStyle.Fill,AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,WrapContents=true};itemTools.Controls.AddRange([ModalButton("Split / move / merge…",()=>new InventoryTransferForm(editor!,ItemSelection().Index)),itemFilter,showEmpty,new Label(){Text="Quantity",AutoSize=true},quantity,Button("Apply quantity",()=>{var row=ItemSelection();editor!.ApplyDomain(d=>d.SetItemQuantity(row.Index,(int)quantity.Value));}),Button("Delete / empty",()=>{var row=ItemSelection();editor!.ApplyDomain(d=>d.DeleteItem(row.Index));}),itemIds,Button("Add known ID",()=>{if(itemIds.SelectedItem is uint id)editor!.ApplyDomain(d=>d.AddKnownItem(id,(int)quantity.Value));})]);itemPanel.Controls.Add(itemTools,0,0);itemPanel.Controls.Add(inventory,0,1);itemPanel.Controls.Add(new Label(){Dock=DockStyle.Fill,Text="Numeric IDs are shown until item names are available. Add places an item already known in this file into a free inventory record. Delete empties the selected record."},0,2);
         inventory.Columns.Add(new DataGridViewTextBoxColumn(){Name="DisplayName",HeaderText="Item name"});inventory.Columns.Add(new DataGridViewTextBoxColumn(){Name="DeclaredMaximum",HeaderText="Declared maximum"});inventory.Columns.Add(new DataGridViewTextBoxColumn(){Name="ConservativeTotal",HeaderText="Original total"});equipment.Columns.Add(new DataGridViewTextBoxColumn(){Name="DisplayName",HeaderText="Equipment name"});equipment.Columns.Add(new DataGridViewTextBoxColumn(){Name="DisplayType",HeaderText="Type"});
         inventory.CellToolTipTextNeeded+=(_,e)=>{if(e.RowIndex>=0&&inventory.Rows[e.RowIndex].DataBoundItem is InventoryItem row&&row.Id is uint id)e.ToolTipText=providerNames.Describe(GameCatalogKind.Item,id);};equipment.CellToolTipTextNeeded+=(_,e)=>{if(e.RowIndex>=0&&equipment.Rows[e.RowIndex].DataBoundItem is EquipmentItem row&&row.Id is uint id&&row.Type is 1 or 2)e.ToolTipText=providerNames.Describe(row.Type==1?GameCatalogKind.Weapon:GameCatalogKind.Armor,id,row.Type);};
@@ -41,6 +78,9 @@ internal sealed class DomainPages : UserControl
         inventory.CellFormatting+=(_,e)=>{if(e.RowIndex>=0&&inventory.Rows[e.RowIndex].DataBoundItem is InventoryItem row&&row.Id is uint id){if(inventory.Columns[e.ColumnIndex].Name=="DeclaredMaximum")e.Value=catalog?.Find(GameCatalogKind.Item,id)?.DeclaredMaximumQuantity?.ToString()??UiLanguage.T("Unknown");if(inventory.Columns[e.ColumnIndex].Name=="ConservativeTotal")e.Value=editor?.Domain?.OriginalItemTotalCeiling(id)?.ToString()??UiLanguage.T("Unknown");}};
         itemFilter.TextChanged+=(_,_)=>RefreshItems();showEmpty.CheckedChanged+=(_,_)=>RefreshItems();inventory.DataBindingComplete+=(_,_)=>{if(inventory.Columns.Contains("Editable"))inventory.Columns["Editable"]!.Visible=false;foreach(DataGridViewColumn c in inventory.Columns)c.HeaderText=c.Name switch{"Index"=>"Record","Id"=>"Item ID","Quantity"=>"Quantity","Issue"=>"Availability",_=>c.HeaderText};};equipment.DataBindingComplete+=(_,_)=>{if(equipment.Columns.Contains("Type"))equipment.Columns["Type"]!.Visible=false;foreach(DataGridViewColumn c in equipment.Columns)c.HeaderText=c.Name switch{"Index"=>"Record","Id"=>"Equipment ID","TypeLabel"=>"Type","Issue"=>"Availability",_=>c.HeaderText};};inventory.CurrentCellChanged+=(_,_)=>{if(inventory.CurrentRow?.DataBoundItem is InventoryItem item&&item.Quantity is int n){long? bound=item.Id is uint id?editor?.Domain?.OriginalItemTotalCeiling(id):null;quantity.Maximum=Math.Min(int.MaxValue,bound??0);quantity.Enabled=bound is not null;quantity.Value=Math.Clamp(n,0,quantity.Maximum);}};
         var equipPage=new TabPage("Equipment / talismans");tabs.TabPages.Add(equipPage);var equipPanel=Panel();equipPage.Controls.Add(equipPanel);var equipTools=new FlowLayoutPanel(){Dock=DockStyle.Fill,AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,WrapContents=true};types.Items.AddRange(["All types","Empty","Weapon","Armor","Talisman"]);types.SelectedIndex=0;categoryFilter.SelectedIndexChanged+=(_,_)=>{if(!refreshingCategories)RefreshEquipment();};equipTools.Controls.AddRange([types,showEmptyEquipment,equipmentFilter,categoryFilter,ModalButton("Edit equipment draft…",()=>new EquipmentDraftForm(editor!, (equipment.CurrentRow?.DataBoundItem as EquipmentItem??throw new InvalidOperationException("Select equipment.")).Index,providerNames)),Button("Equipment information…",()=>{if(equipment.CurrentRow?.DataBoundItem is EquipmentItem row){var mapping=row.Id is uint id?providerNames.ResolveAll(row.Type==1?GameCatalogKind.Weapon:GameCatalogKind.Armor,id,row.Type).FirstOrDefault():null;CatalogReferenceView.Show(this,equipmentDetail.Text,mapping?.Entry,providerNames.ShowUnverifiedCandidates);}}),Button("Read-only fields…",ShowSchema)]);equipPanel.Controls.Add(equipTools,0,0);equipPanel.Controls.Add(equipment,0,1);equipPanel.Controls.Add(equipmentDetail,0,2);equipPanel.RowStyles[2].SizeType=SizeType.AutoSize;equipPanel.SizeChanged+=(_,_)=>equipmentDetail.MaximumSize=new Size(Math.Max(180,equipPanel.ClientSize.Width-equipPanel.Padding.Horizontal-equipmentDetail.Margin.Horizontal),0);void LanguageChanged(){RefreshCategories();ShowEquipment();}UiLanguage.Changed+=LanguageChanged;Disposed+=(_,_)=>UiLanguage.Changed-=LanguageChanged;showEmptyEquipment.CheckedChanged+=(_,_)=>RefreshEquipment();types.SelectedIndexChanged+=(_,_)=>RefreshEquipment();equipmentFilter.TextChanged+=(_,_)=>RefreshEquipment();equipment.CurrentCellChanged+=(_,_)=>ShowEquipment();
+        var addTemplate=ModalButton("Add from template…",()=>new EquipmentAddForm(editor!,providerNames));
+        addTemplate.Name="EquipmentTemplateAdd";
+        equipTools.Controls.Add(addTemplate);
     }
     private static DataGridView Grid()=>new(){Dock=DockStyle.Fill,ReadOnly=true,AllowUserToAddRows=false,AllowUserToDeleteRows=false,AutoGenerateColumns=true,AutoSizeColumnsMode=DataGridViewAutoSizeColumnsMode.Fill,RowHeadersVisible=false,SelectionMode=DataGridViewSelectionMode.FullRowSelect,MultiSelect=false};
     private static TableLayoutPanel Panel(){var p=new TableLayoutPanel(){Dock=DockStyle.Fill,RowCount=3,ColumnCount=1,Padding=new Padding(8)};p.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,100));p.RowStyles.Add(new RowStyle(SizeType.AutoSize));p.RowStyles.Add(new RowStyle(SizeType.Percent,100));p.RowStyles.Add(new RowStyle(SizeType.Absolute,115));return p;}
@@ -48,11 +88,28 @@ internal sealed class DomainPages : UserControl
     public void Bind(DirectoryEditor value){editor=value;RefreshData();}
     public void RefreshData()
     {
-        if(editor?.Domain is not DomainEditor d){character.Text="Open a recognized slot to read available named fields.";inventory.DataSource=null;equipment.DataSource=null;itemIds.Items.Clear();equipmentDetail.Text="";moneyApply.Enabled=false;pointsApply.Enabled=false;return;}
-        object? selectedItem=itemIds.SelectedItem;        var c=d.Character();character.Text=$"Name: {UiLanguage.Data(c.Name??"Unknown")}\nHunter rank: {c.HunterRank?.ToString()??"Unknown"}    Master rank: {c.MasterRank?.ToString()??"Unknown / absent"}\nMoney: {c.Money?.ToString("N0")??"Unknown"}    Points: {c.Points?.ToString("N0")??"Unknown"}\n{editor.MoneyMirrorStatus}\nName and ranks are read-only.\nConservative changes cannot exceed original values; game maxima are unknown.\n"+string.Join("\n",c.Issues.Keys.Select(x=>x+" is unavailable for this file."));
+        if(editor?.Domain is not DomainEditor d){character.Text="Open a recognized slot to read available named fields.";inventory.DataSource=null;equipment.DataSource=null;itemIds.Items.Clear();equipmentDetail.Text="";moneyApply.Enabled=false;pointsApply.Enabled=false;nameApply.Enabled=false;return;}
+        object? selectedItem=itemIds.SelectedItem;        var c=d.Character();character.Text=$"Name: {UiLanguage.Data(c.Name??"Unknown")}\nHunter rank: {c.HunterRank?.ToString()??"Unknown"}    Master rank: {c.MasterRank?.ToString()??"Unknown / absent"}\nMoney: {c.Money?.ToString("N0")??"Unknown"}    Points: {c.Points?.ToString("N0")??"Unknown"}\n{editor.MoneyMirrorStatus}\nConservative currency changes cannot exceed original values; game maxima are unknown.\n"+string.Join("\n",c.Issues.Keys.Select(x=>x+" is unavailable for this file."));
+        RefreshNameDraft();
         moneyApply.Enabled=d.CanEditMoney;pointsApply.Enabled=d.CanEditPoints;money.Maximum=d.OriginalMoneyCeiling??0;points.Maximum=d.OriginalPointsCeiling??0;money.Value=Math.Clamp(c.Money??0,0,money.Maximum);points.Value=Math.Min(c.Points??0,points.Maximum);
         itemIds.Items.Clear();foreach(uint id in d.KnownItemIds)itemIds.Items.Add(id);if(selectedItem is not null&&itemIds.Items.Contains(selectedItem))itemIds.SelectedItem=selectedItem;else if(itemIds.Items.Count>0)itemIds.SelectedIndex=0;
         RefreshItems();RefreshCategories();RefreshEquipment();
+    }
+    private void RefreshNameDraft()
+    {
+        if(editor?.Domain is not DomainEditor domain)return;
+        var availability=domain.NameEditStatus();
+        if(!nameDraftDirty||nameSourceDigest!=editor.Slot.Document!.Digest)
+        {
+            loadingNameDraft=true;
+            nameDraft.Text=availability.CurrentName??domain.Character().Name??"";
+            loadingNameDraft=false;
+            nameDraftDirty=false;
+        }
+        nameSourceDigest=editor.Slot.Document!.Digest;
+        nameApply.Enabled=editor.CanRename;
+        nameDraft.Enabled=availability.CanRename;
+        nameWarning.Text=editor.NameMirrorStatus+(availability.CanRename?"":"\n"+availability.Detail);
     }
     private InventoryItem ItemSelection()=>inventory.CurrentRow?.DataBoundItem as InventoryItem??throw new InvalidOperationException("Select an inventory record.");
     private void RefreshItems(){if(editor?.Domain is DomainEditor d){int? selected=(inventory.CurrentRow?.DataBoundItem as InventoryItem)?.Index;inventory.DataSource=d.Inventory("",showEmpty.Checked).Where(row=>itemFilter.Text.Length==0||$"{row.Id} 0x{row.Id:X8}".Contains(itemFilter.Text,StringComparison.OrdinalIgnoreCase)||row.Id is uint itemId&&providerNames.Matches(GameCatalogKind.Item,itemId,itemFilter.Text)).ToList();PreserveRow(inventory,selected,row=>(row as InventoryItem)?.Index);}}

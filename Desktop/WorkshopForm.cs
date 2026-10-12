@@ -14,7 +14,7 @@ internal sealed class WorkshopForm : Form
     private GameCatalog? externalCatalog;
     internal CatalogForm CreateCatalogBrowser()=>new(catalog??externalCatalog??new GameCatalog([]),directoryModel,RetainLocalCatalog);
     private void RetainLocalCatalog(GameCatalog loaded){catalog=loaded;domainPages.SetCatalog(loaded);}
-    internal BuildForm CreateBuildWindow()=>new(catalog??externalCatalog??new GameCatalog([]));
+    internal BuildForm CreateBuildWindow()=>new(catalog??externalCatalog??new GameCatalog([]),directoryModel,()=>{domainPages.RefreshData();UpdateActions();_ = RefreshPage();});
     private readonly ListBox slots=new(){Dock=DockStyle.Fill,IntegralHeight=false,HorizontalScrollbar=true};
     private readonly DataGridView grid=new(){Dock=DockStyle.Fill,ReadOnly=true,AllowUserToAddRows=false,AllowUserToDeleteRows=false,AutoGenerateColumns=false,SelectionMode=DataGridViewSelectionMode.FullRowSelect,MultiSelect=false,RowHeadersVisible=false,AutoSizeRowsMode=DataGridViewAutoSizeRowsMode.None};
     private readonly TextBox search=new(){Width=280,PlaceholderText="Search opaque ID or text"};
@@ -79,7 +79,7 @@ internal sealed class WorkshopForm : Form
     private async Task RefreshPage()
     {
         if(model.Document is null||busy)return;filterCancellation?.Cancel();filterCancellation=new();var token=filterCancellation.Token;int generation=++queryGeneration;var current=model;string query=search.Text;int currentParent=parent,currentPage=page;
-        try{var data=await Task.Run(()=>current.Browse(currentParent,query,currentPage,200,token));if(generation!=queryGeneration||current!=model)return;displayed=data;grid.DataSource=data.Rows.ToList();pageInfo.Text=$"Page {page+1} · {data.Total:N0} matches";context.Text=query.Trim().Length>0?"Global search":parent<0?"Root records":$"Children of event {parent}";pending.Text=$"Staged: {directoryModel.StagedCount:N0}";domainPages.Enabled=!busy&&model.Document is not null;UpdateActions();}
+        try{var data=await Task.Run(()=>current.Browse(currentParent,query,currentPage,200,token));if(generation!=queryGeneration||current!=model||IsDisposed||Disposing)return;displayed=data;grid.DataSource=data.Rows.ToList();pageInfo.Text=$"Page {page+1} · {data.Total:N0} matches";context.Text=query.Trim().Length>0?"Global search":parent<0?"Root records":$"Children of event {parent}";pending.Text=$"Staged: {directoryModel.StagedCount:N0}";domainPages.Enabled=!busy&&model.Document is not null;UpdateActions();}
         catch(OperationCanceledException){}catch(Exception e){ShowError(e);}
     }
     private void SelectRow()
@@ -130,4 +130,18 @@ internal sealed class WorkshopForm : Form
     internal IReadOnlyList<string> SmokeTabs(){var names=new List<string>();foreach(TabPage tab in mainTabs.TabPages)names.Add(tab.Text);return names;}
     internal void SelectSmokeTab(int index){mainTabs.SelectedIndex=index==1?3:index;}
     private void ShowError(Exception e){status.Text=UiLanguage.Data(e.Message);UiLanguage.Message(this,UiLanguage.Data(e.Message+(e.InnerException is null?"":"\n\n"+e.InnerException.Message)),"Operation not completed",MessageBoxButtons.OK,MessageBoxIcon.Warning);}
+    protected override void Dispose(bool disposing)
+    {
+        if(disposing)
+        {
+            filterCancellation?.Cancel();
+            queryGeneration++;
+            debounce.Stop();
+            debounce.Dispose();
+            // Its pages are reparented into mainTabs, so this controller is an
+            // owned component rather than a child in the window's control tree.
+            domainPages?.Dispose();
+        }
+        base.Dispose(disposing);
+    }
 }

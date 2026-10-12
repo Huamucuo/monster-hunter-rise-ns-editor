@@ -1,4 +1,6 @@
 using FreshFoundation;
+if(args.Length==1&&args[0]=="--self-test-r11")return R11Checks.Run();
+if(args.Length==1&&args[0]=="--self-test-r10-model")return R10Checks.Run(false);
 if(args.Length==1&&args[0]=="--self-test-history")return HistoryChecks.Run();
 if(args.Length==1&&args[0]=="--self-test-r10")return R10Checks.Run();
 if(args.Length==1&&args[0]=="--self-test-r9")return R9Checks.Run();
