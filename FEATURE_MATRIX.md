@@ -1,4 +1,4 @@
-> Public-preview packaging note (2026-10-12): This original R10 record is retained for provenance and feature/evidence history. Actual catalog content, historical local test reports and Git history are excluded from this unpublished snapshot. Device-dependent development and validation are paused. Current attachment hashes and fresh preparation checks are recorded in MANIFEST.sha256.json and PREPARATION_VALIDATION.md.
+> R11 update (2026-10-12): Offline application development resumed by explicit maintainer request. The published source preview excludes actual catalogs, private reports, saves and old Git history. Native-device testing remains unavailable while the NS is on loan. The current table and R11 section describe the new software; dated R5–R10 sections retain historical scope and results. Current attachment hashes are recorded by the final reviewed MANIFEST.sha256.json.
 
 # Feature matrix
 
@@ -9,9 +9,10 @@ For gameplay writes, VERIFIED requires the full scoped export/load/observed-effe
 | --- | --- | --- |
 | Save identification | READ_ONLY | Observed DSSS v2/checksum/structure profile; no authenticated game-version mapping |
 | Save reading | READ_ONLY | Full observed structural traversal and immutable source retention |
-| Decode / encode | WRITE_EXPERIMENTAL | Raw-DEFLATE and same-width primitive serialization; no dynamic tree writer |
+| Decode / encode | WRITE_EXPERIMENTAL | Raw-DEFLATE, fixed-width primitive replacement and explicit tag-15 text resizing with structural alignment reconstruction; no arbitrary schema/array expansion |
 | Character slots | IMPLEMENTED | Explicit folder/file selection; independent status for three known slot filenames and system file |
 | Character information | READ_ONLY | Name and independent primary rank paths; absent MR remains unknown |
+| Character-name writing | WRITE_EXPERIMENTAL | Exact two local owner routes plus validated corresponding system name; one history group; conservative 1–16 UTF-16-unit application policy, not a verified game rule |
 | Currency | WRITE_EXPERIMENTAL | Conservative 0..original money/points; folder money preview coupling with grouped Undo/Clear; not game maxima |
 | Item reading | READ_ONLY | Numeric IDs/quantities with filtering and preserved record order |
 | Item quantity editing | WRITE_EXPERIMENTAL | Same-ID staged total cannot exceed original positive total; zero normalizes an existing supported record |
@@ -23,8 +24,9 @@ For gameplay writes, VERIFIED requires the full scoped export/load/observed-effe
 | Talismans | WRITE_EXPERIMENTAL | Existing type-3 talismans; atomic two-pair plus decoration draft using original observed pairs |
 | Skills / affixes | WRITE_EXPERIMENTAL | Only the two reviewed talisman pair positions; no arbitrary skills/levels, affixes or names |
 | Rarity / quality | NOT_STARTED | No admitted editable domain mapping |
-| Add equipment | NOT_STARTED | No creation/initialization grammar implemented |
-| Variable-length structure | NOT_STARTED | Fixed-width primitive replacement only |
+| Add equipment | WRITE_EXPERIMENTAL | Original unchanged type/source-ID template copies into existing type0/ID0 records with identical complete recursive metadata; quantity preview, default decoration clear, explicit source-decoration opt-in |
+| Add Build to equipment box | WRITE_EXPERIMENTAL | All seven owned-template positions or six/None work without catalog; each non-None piece resolves or all reject; one Apply/Undo/Redo; no auto-equip |
+| Variable-length structure | WRITE_EXPERIMENTAL | Tag-15 text only; original logical identities/counts preserved, compatible common nonzero padding retained and new padding zeroed |
 | Checksum | VERIFIED | Retained R2 vectors and separately reviewed source-content validation |
 | Save modified copy | WRITE_EXPERIMENTAL | Desktop and service export; complete recognized four-file folder workflow, explicit partial-result reporting |
 | Backup | VERIFIED | Retained R4 service validation; desktop receipt associated with selected-slot export |
@@ -32,7 +34,7 @@ For gameplay writes, VERIFIED requires the full scoped export/load/observed-effe
 | GUI | IMPLEMENTED | English WinForms window, named domain tabs, structural browser; synthetic minimum/large-window smoke |
 | Search / filter | IMPLEMENTED | Paged opaque-ID/class-ID/local-text search; numeric inventory/equipment filters, empty equipment hidden by default |
 | Game validation workflow | IMPLEMENTED | Independent case exports, manual evidence gates and returned-bundle comparison; actual cases remain EXPORTED |
-| Name catalog interface | IMPLEMENTED | Optional explicit local multilingual catalog, kind/ID keys, search/filter/sort and declaration-only metadata; bundled external MHRice candidates opt-in, all UNVERIFIED_MAPPING |
+| Name catalog interface | IMPLEMENTED | Numeric fallback plus optional separately supplied local multilingual catalogs; kind/ID keys, search/filter/sort and declaration-only metadata; all candidates UNVERIFIED_MAPPING, no actual catalog in the public source |
 | Equipment field schema | READ_ONLY | Reviewed numeric identity, decoration and talisman pair fields; unknown auxiliary values not editable |
 | Version recognition | READ_ONLY | Envelope v2 only; no game-version inference from auxiliary array length |
 
@@ -106,15 +108,30 @@ No native-game evidence added. Earlier EXPORTED cases remain historical. Equipme
 
 Planning never stages save changes and cannot create equipment in a save. No current-equipped mapping, new save field, range expansion, augmentation, rarity/level writer or gameplay verification was added. Full editor functionality and native-game evidence remain incomplete; narrower source publication still has independent rights/provenance/package gates.
 
-## Outstanding core functions after offline Build
+## Current outstanding core functions after R11
 
 | Requested function | Status | Remaining scope |
 |---|---|---|
 | Current-equipped references / switching | RESEARCHING | No admitted current loadout reference mapping; offline positions are not worn equipment |
-| Equipment creation / add Build to box | NOT_STARTED | No creation/initialization grammar; planner JSON cannot create save items |
-| Character-name writing | RESEARCHING | Reading exists; limits and required synchronization remain unconfirmed |
+| Fresh equipment identity creation | NOT_STARTED | No arbitrary identity/rarity/upgrade/instance initialization grammar; original-template copies do not establish one |
+| Game name limits / complete mirror validity | RESEARCHING | Experimental measured mirrors are implemented; all required game mirrors and game-specific input rules remain unconfirmed |
+| Virtual talisman socket output | NOT_STARTED | Virtual levels stay planning-only; opaque auxiliary arrays are not established as socket encodings |
 | Augmentation / equipment base attributes | NOT_STARTED | External reference values are not editable save mappings |
 | Appearance editing | NOT_STARTED | No admitted editable appearance fields |
 | Buddy editing | NOT_STARTED | No admitted editable buddy fields |
 
 R10 correction: transient virtual-skill controls remain valid, explicitly loaded catalogs persist into Build, slot labels always identify offline position/capacity, per-piece contributions include valid decorations, confirmed virtual talismans show their own pairs/slots, and search remains active across piece/slot changes. Gameplay states unchanged.
+
+## R11 names, original templates and whole Build (2026-10-12)
+
+| Feature | Status | Scope |
+|---|---|---|
+| Name draft and linked rename | WRITE_EXPERIMENTAL | Apply/reset, exact UTF-16 input, both required local owner routes, validated system mirror, local-only warning for explicit single-file use, atomic failed/no-op handling |
+| Text resizing serializer | WRITE_EXPERIMENTAL | Growing/shrinking text across alignment boundaries, mixed primitive edits, strict expected original bytes, logical reinspection and untargeted-value preservation |
+| Original equipment templates | WRITE_EXPERIMENTAL | All occupied original weapon/armor/talisman types, current staged settings, exact full recursive class/field/array prefix/count/mode/leaf checks, original source identity and stale-preview rejection |
+| Whole Build to box | WRITE_EXPERIMENTAL | Explicit source configuration per selected piece, every non-None piece included, no partial staging on unresolved identity/jewel/virtual/capacity failures, no auto-equipping |
+| Portable template plan | IMPLEMENTED | Schema 2 numeric selections with opaque digest hints; schema 1 remains readable; loaded bindings require current-source revalidation or explicit replacement |
+| Bilingual confirmation UI | IMPLEMENTED | Character Apply/reset, quantity/source-decoration template preview, all seven owned-template choices including actual talisman/None, fixed actions/warnings and separately scrolling details |
+| Copied talisman display | READ_ONLY | Current copied pairs can be displayed before export/reload; existing-equipment writers still require original occupied identities |
+
+Reviewed inputs are the unchanged `docs/specs/r11` packets. Fresh focused synthetic checks and actual-control smoke commands are recorded in IMPLEMENTATION_NOTES_R11.md; reports/fixtures/screenshots remain outside public attachments. No synthetic or reviewer byte result promotes a gameplay row to VERIFIED. Native R11 rows remain NOT_TESTED in GAME_VALIDATION_MATRIX.md.

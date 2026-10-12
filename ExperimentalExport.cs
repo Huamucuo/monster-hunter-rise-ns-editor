@@ -58,8 +58,9 @@ public sealed class ExperimentalExportSession
         }
         catch{State=ExperimentalExportState.Failed;throw;}
     }
-    public ExperimentalExportReceipt Export(IReadOnlyList<PrimitiveReplacement> requests,string newOutputPath,string backupParent) => Execute(()=>ExportCore(requests,newOutputPath,backupParent));
-    private ExperimentalExportReceipt ExportCore(IReadOnlyList<PrimitiveReplacement> requests,string newOutputPath,string backupParent)
+    public ExperimentalExportReceipt Export(IReadOnlyList<PrimitiveReplacement> requests,string newOutputPath,string backupParent) => Export(requests,[],newOutputPath,backupParent);
+    public ExperimentalExportReceipt Export(IReadOnlyList<PrimitiveReplacement> requests,IReadOnlyList<TextReplacement> texts,string newOutputPath,string backupParent) => Execute(()=>ExportCore(requests,texts,newOutputPath,backupParent));
+    private ExperimentalExportReceipt ExportCore(IReadOnlyList<PrimitiveReplacement> requests,IReadOnlyList<TextReplacement> texts,string newOutputPath,string backupParent)
     {
         CompletedOriginalBackup? backup=null;
         try
@@ -67,7 +68,7 @@ public sealed class ExperimentalExportSession
             State=ExperimentalExportState.Preparing;
             if(Selected is null || SourcePath is null)throw new InvalidOperationException("Explicit selection required.");
             // Validate all requests and produce an immutable in-memory result first.
-            var result=ExperimentalStructuralSerializer.Replace(Selected,requests);var modified=result.CopyFileBytes();
+            var result=ExperimentalStructuralSerializer.Replace(Selected,requests,texts);var modified=result.CopyFileBytes();
             using var sourceParent=SafeFiles.PinParents(SourcePath);
             using var outputParent=SafeFiles.PinParents(newOutputPath);
             using var backupParentLease=SafeFiles.PinParents(System.IO.Path.Combine(backupParent,"reserved"));

@@ -12,4 +12,10 @@ Alternative: preserve the existing history for a later public route only after r
 
 Only files in the current `MANIFEST.sha256.json` are included. The manifest excludes its own hash to avoid circularity. `PUBLIC_FILES.md` is the human-readable list; `tools/check_public_snapshot.py` checks the snapshot boundary and hashes. Generated local build/test outputs are not public attachments. No Windows binary release is prepared.
 
-The approved own-code MIT grant is in LICENSE; LICENSE-PROPOSAL.md records the exact decision and text. Public catalog reuse or game-content licensing is not being approved by attribution alone. Development and real-device validation remain paused while the NS device is lent out.
+The approved own-code MIT grant is in LICENSE; LICENSE-PROPOSAL.md records the exact decision and text. Public catalog reuse or game-content licensing is not being approved by attribution alone.
+
+## R11 reviewed source synchronization
+
+The maintainer explicitly authorized offline name editing, original-template equipment additions, whole-Build staging and reviewed GitHub synchronization on 2026-10-12. This supersedes the earlier software-development pause for that scope. Native-device testing remains unavailable while the NS is lent out; no stable release or binary distribution is implied.
+
+R11 public additions consist of independently implemented source/tests, unchanged reviewed `docs/specs/r11` packets, an input identity record and concise documentation. Original-source type/ID template copies and measured owner text changes remain WRITE_EXPERIMENTAL; native R11 rows remain NOT_TESTED. No catalog, save/export/backup, player data, private report, screenshot, probe, archive, build cache or excluded original history is included. Root review independently checks private inputs and refreshes PUBLIC_FILES.md/MANIFEST.sha256.json before synchronizing the reviewed source; the isolated implementer does not push or publish.

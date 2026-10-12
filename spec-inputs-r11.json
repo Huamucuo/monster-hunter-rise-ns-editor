@@ -1,0 +1,23 @@
+{
+  "revision": "R11",
+  "scope": "Reviewed names and original-source equipment template/whole-Build behavior",
+  "independentPublicBaseline": "87a695c",
+  "inputs": [
+    {
+      "file": "docs/specs/r11/FACTS.md",
+      "sha256": "E769ADF333D7192764297716AA0C8416340AD35B1D304B8FB6865159ECDF858F"
+    },
+    {
+      "file": "docs/specs/r11/BEHAVIOR.md",
+      "sha256": "0E835B4FCC4E4DC81E98D050707B2241305E2D3411E943BD8647D42966ED9C88"
+    },
+    {
+      "file": "docs/specs/r11/TESTS.md",
+      "sha256": "BBD80083A112BC90774B3FB34BA8E1D6C70412301E15C17B0388946CAA057814"
+    }
+  ],
+  "implementationInputs": "These reviewed packets and the current independent public application only",
+  "excludedImplementationInputs": "Private saves/probes, other research directories, actual catalogs, legacy code/tests, REE, reference archives, memory and prior conversation",
+  "originLimits": "GPT assistance and shared-machine procedural isolation; packet author had historical REE-field hypothesis exposure. Not independent historical discovery, strict clean-room certification, blanket originality or legal clearance.",
+  "nativeGameAcceptance": "NOT_TESTED"
+}

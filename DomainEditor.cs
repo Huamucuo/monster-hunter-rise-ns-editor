@@ -74,9 +74,20 @@ public sealed partial class DomainEditor
     }
     public TalismanInfo Talisman(int equipmentIndex)
     {
-        var pairs=ReadPairs(equipmentIndex);int array=Child(equipment[equipmentIndex].node,557620028,-1);var children=workspace.ChildIndices(array);
+        var pairs=ReadTalismanPairsForDisplay(equipmentIndex);int array=Child(equipment[equipmentIndex].node,557620028,-1);var children=workspace.ChildIndices(array);
         if(children.Count is not (4 or 5)||children.Any(i=>workspace.Document!.Structure.Events[i].Tag!=8||workspace.Document.Structure.Events[i].Width!=4))throw new InvalidDataException("Auxiliary array shape not recognized.");
         return new(equipmentIndex,pairs,DecorationIds(equipmentIndex),children.Count);
+    }
+    private IReadOnlyList<SkillPair> ReadTalismanPairsForDisplay(int equipmentIndex)
+    {
+        if(equipmentIndex<0||equipmentIndex>=equipment.Count)throw new ArgumentOutOfRangeException(nameof(equipmentIndex));
+        var record=equipment[equipmentIndex];
+        if(record.type<0||ReadUInt(record.type)!=3)throw new InvalidOperationException("Only current type-3 talismans have paired display data.");
+        // Read-only presentation also supports newly staged copies. Writers keep
+        // using PairFields, which requires an original existing type-3 record.
+        int[] ids=PrimitiveArray(record.node,347745453,2,1,1);
+        int[] levels=PrimitiveArray(record.node,3058239487,2,8,4);
+        return Enumerable.Range(0,2).Select(at=>new SkillPair(workspace.PrimitiveBytes(ids[at])![0],ReadUInt(levels[at]))).ToArray();
     }
     public IReadOnlyList<EquipmentFieldSchema> EquipmentSchema(int index)
     {
@@ -143,7 +154,7 @@ public sealed partial class DomainEditor
     }
 }
 public sealed record DirectoryFileResult(string Label,string? OutputPath,ExperimentalExportReceipt? Receipt,string? Error);
-public sealed class DirectoryEditor
+public sealed partial class DirectoryEditor
 {
     private string? directory;
     public EditorWorkspace Slot {get;private set;}=new();
@@ -157,13 +168,13 @@ public sealed class DirectoryEditor
     public bool CanUndo=>actions.Count>0;
     public bool CanRedo=>redoActions.Count>0;
     public int StagedCount=>Slot.StagedCount+(System?.StagedCount??0);
-    public IReadOnlyList<SlotCandidate> OpenDirectory(string path){Slot=new();System=null;Domain=null;SlotNumber=null;cachedMoney=-1;actions.Clear();redoActions.Clear();directory=Path.GetFullPath(path);return SlotDiscovery.Discover(directory);}
+    public IReadOnlyList<SlotCandidate> OpenDirectory(string path){Slot=new();System=null;Domain=null;SlotNumber=null;cachedMoney=-1;ResetNameLink();actions.Clear();redoActions.Clear();directory=Path.GetFullPath(path);return SlotDiscovery.Discover(directory);}
     public void OpenSlot(string path)
     {
         actions.Clear();redoActions.Clear();Slot=new();System=null;Domain=null;cachedMoney=-1;MoneyMirrorStatus="Primary-only: system cached preview remains unchanged.";
         Slot.Open(path);Domain=new(Slot);SlotNumber=Path.GetFileName(path).ToLowerInvariant() switch{"data001slot.bin"=>1,"data002slot.bin"=>2,"data003slot.bin"=>3,_=>null};
-        if(directory is null||SlotNumber is null||!string.Equals(Path.GetDirectoryName(Path.GetFullPath(path)),directory,StringComparison.OrdinalIgnoreCase))return;
-        string systemPath=Path.Combine(directory,"data00-1.bin");if(!File.Exists(systemPath))return;
+        if(directory is null||SlotNumber is null||!string.Equals(Path.GetDirectoryName(Path.GetFullPath(path)),directory,StringComparison.OrdinalIgnoreCase)){InitializeNameLink();return;}
+        string systemPath=Path.Combine(directory,"data00-1.bin");if(!File.Exists(systemPath)){InitializeNameLink();return;}
         try
         {
             var system=new EditorWorkspace();system.Open(systemPath);var arrays=system.Document!.Structure.Events.Select((e,i)=>(e,i)).Where(p=>p.e.Identifier==28334441).ToArray();
@@ -173,6 +184,7 @@ public sealed class DirectoryEditor
             System=system;cachedMoney=money;MoneyMirrorStatus="Directory context: primary money and corresponding system cached money will be staged together.";
         }
         catch(Exception e){MoneyMirrorStatus="Primary-only: system cached preview not linked. "+e.Message;}
+        InitializeNameLink();
     }
     public void SetMoney(int value)
     {
@@ -186,7 +198,7 @@ public sealed class DirectoryEditor
     public void ApplyRaw(int eventIndex,byte[] bytes)=>Track(()=>Slot.Apply(eventIndex,bytes));
     public bool Undo(){if(!actions.TryPop(out var before))return false;redoActions.Push((Slot.UndoDepth,System?.UndoDepth??0));while(Slot.UndoDepth>before.slot)Slot.Undo();if(System is not null)while(System.UndoDepth>before.system)System.Undo();return true;}
     public bool Redo(){if(!redoActions.TryPop(out var after))return false;actions.Push((Slot.UndoDepth,System?.UndoDepth??0));while(Slot.UndoDepth<after.slot)if(!Slot.Redo())throw new InvalidOperationException("Slot history mismatch.");if(System is not null)while(System.UndoDepth<after.system)if(!System.Redo())throw new InvalidOperationException("System history mismatch.");return true;}
-    public IReadOnlyList<StagedChange> ReviewChanges()=>Slot.ReviewChanges("Selected slot").Select(r=>r with{Capability=Domain?.ChangeLabel(r.EventIndex)??r.Capability}).Concat(System?.ReviewChanges("System").Select(r=>r with{Capability=r.EventIndex==cachedMoney?"Money / cached preview":r.Capability})??[]).ToArray();
+    public IReadOnlyList<StagedChange> ReviewChanges()=>Slot.ReviewChanges("Selected slot").Select(r=>r with{Capability=Domain?.ChangeLabel(r.EventIndex)??r.Capability}).Concat(System?.ReviewChanges("System").Select(r=>r with{Capability=r.EventIndex==cachedMoney?"Money / cached preview":r.EventIndex==cachedName?"Name / cached preview":r.Capability})??[]).ToArray();
     public void Clear()=>Track(()=>{Slot.Clear();System?.Clear();});
     public IReadOnlyList<DirectoryFileResult> ExportCopies(string newDirectory,string? backupParent=null)
     {

@@ -40,7 +40,7 @@ jobs:
           $nsAssembly = Join-Path $env:GITHUB_WORKSPACE 'bin/Release/net10.0/Foundation.dll'
           Push-Location $nsSyntheticRoot
           try {
-            foreach ($nsSuite in @('--self-test-history', '--self-test-r9', '--self-test-r5', '--self-test-catalog')) {
+            foreach ($nsSuite in @('--self-test-history', '--self-test-r9', '--self-test-r5', '--self-test-catalog', '--self-test-r10-model', '--self-test-r11')) {
               dotnet $nsAssembly $nsSuite
               if ($LASTEXITCODE -ne 0) { throw "Synthetic suite failed: $nsSuite" }
             }

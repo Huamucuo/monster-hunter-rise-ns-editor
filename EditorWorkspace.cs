@@ -104,33 +104,62 @@ public sealed class EditorWorkspace
         return payload.AsSpan(coordinate-12,(int)width).ToArray();
     }
     internal int ReadSigned32(int index)=>BinaryPrimitives.ReadInt32LittleEndian(PrimitiveBytes(index)!);
-    public string TextAt(int index)
+    public string TextAt(int index,bool original=false)
     {
         CheckIndex(index);var e=Document!.Structure.Events[index];if(e.Tag!=15||e.Count is not uint units)return "";
+        if(!original&&staged.TryGetValue(index,out var pending))return Encoding.Unicode.GetString(pending);
         int start=((e.Coordinate+3)&~3)-12+4;return Encoding.Unicode.GetString(payload,start,checked((int)units*2));
+    }
+    internal byte[] ValueBytes(int index,bool original=false)
+    {
+        var primitive=PrimitiveBytes(index,original);
+        if(primitive is not null)return primitive;
+        var value=Document!.Structure.Events[index];
+        if(value.Tag!=15||value.Count is not uint units)throw new ArgumentException("Only primitive or tag-15 text data can be staged.");
+        if(!original&&staged.TryGetValue(index,out var pending))return (byte[])pending.Clone();
+        return payload.AsSpan(((value.Coordinate+3)&~3)-12+4,checked((int)units*2)).ToArray();
+    }
+    public void ApplyText(int eventIndex,string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        CheckIndex(eventIndex);
+        if(Document!.Structure.Events[eventIndex].Tag!=15)throw new ArgumentException("Only tag-15 text data can be staged.");
+        var encoder=new UnicodeEncoding(false,false,true);
+        byte[] bytes;
+        try{bytes=encoder.GetBytes(text);}
+        catch(EncoderFallbackException e){throw new ArgumentException("Malformed UTF-16 replacement.",e);}
+        Apply(eventIndex,bytes);
     }
     public void Apply(int eventIndex,byte[] replacement)=>Apply(new Dictionary<int,byte[]>{{eventIndex,replacement}});
     public void Apply(IReadOnlyDictionary<int,byte[]> replacements)
     {
         ArgumentNullException.ThrowIfNull(replacements);var prepared=new Dictionary<int,byte[]>();
-        foreach(var p in replacements){var original=PrimitiveBytes(p.Key,true)??throw new ArgumentException("Only primitive data can be staged.");if(p.Value is null||p.Value.Length!=original.Length)throw new ArgumentException("Exact primitive width required.");if(!p.Value.SequenceEqual(PrimitiveBytes(p.Key)!))prepared.Add(p.Key,(byte[])p.Value.Clone());}
+        foreach(var p in replacements)
+        {
+            var original=ValueBytes(p.Key,true);
+            if(p.Value is null)throw new ArgumentException("Null replacement data.");
+            if(Document!.Structure.Events[p.Key].Tag==15)ExperimentalStructuralSerializer.ValidateTextBytes(p.Value);
+            else if(p.Value.Length!=original.Length)throw new ArgumentException("Exact primitive width required.");
+            if(!p.Value.SequenceEqual(ValueBytes(p.Key)))prepared.Add(p.Key,(byte[])p.Value.Clone());
+        }
         var previous=new Dictionary<int,byte[]?>();
-        foreach(var p in prepared){previous[p.Key]=staged.TryGetValue(p.Key,out var old)?(byte[])old.Clone():null;if(p.Value.SequenceEqual(PrimitiveBytes(p.Key,true)!))staged.Remove(p.Key);else staged[p.Key]=p.Value;}
-        if(previous.Count>0){undo.Push(previous);redo.Clear();}
+        foreach(var p in prepared){previous[p.Key]=staged.TryGetValue(p.Key,out var old)?(byte[])old.Clone():null;if(p.Value.SequenceEqual(ValueBytes(p.Key,true)))staged.Remove(p.Key);else staged[p.Key]=p.Value;}
+        if(previous.Count>0){undo.Push(previous);redo.Clear();searchKey=null;}
     }
-    private bool Replay(Stack<Dictionary<int,byte[]?>> from,Stack<Dictionary<int,byte[]?>> to){if(!from.TryPop(out var target))return false;var inverse=new Dictionary<int,byte[]?>();foreach(var p in target){inverse[p.Key]=staged.TryGetValue(p.Key,out var current)?(byte[])current.Clone():null;if(p.Value is null)staged.Remove(p.Key);else staged[p.Key]=(byte[])p.Value.Clone();}to.Push(inverse);return true;}
+    private bool Replay(Stack<Dictionary<int,byte[]?>> from,Stack<Dictionary<int,byte[]?>> to){if(!from.TryPop(out var target))return false;var inverse=new Dictionary<int,byte[]?>();foreach(var p in target){inverse[p.Key]=staged.TryGetValue(p.Key,out var current)?(byte[])current.Clone():null;if(p.Value is null)staged.Remove(p.Key);else staged[p.Key]=(byte[])p.Value.Clone();}to.Push(inverse);searchKey=null;return true;}
     internal sealed record HistoryCheckpoint(Dictionary<int,byte[]> Staged,Dictionary<int,byte[]?>[] Undo,Dictionary<int,byte[]?>[] Redo);
     private static Dictionary<int,byte[]?> CopyHistory(Dictionary<int,byte[]?> value)=>value.ToDictionary(p=>p.Key,p=>p.Value is null?null:(byte[])p.Value.Clone());
     internal HistoryCheckpoint CaptureHistory()=>new(staged.ToDictionary(p=>p.Key,p=>(byte[])p.Value.Clone()),undo.Select(CopyHistory).ToArray(),redo.Select(CopyHistory).ToArray());
-    internal void RestoreHistory(HistoryCheckpoint state){staged.Clear();foreach(var p in state.Staged)staged[p.Key]=(byte[])p.Value.Clone();undo.Clear();redo.Clear();foreach(var row in state.Undo.Reverse())undo.Push(CopyHistory(row));foreach(var row in state.Redo.Reverse())redo.Push(CopyHistory(row));}
+    internal void RestoreHistory(HistoryCheckpoint state){staged.Clear();foreach(var p in state.Staged)staged[p.Key]=(byte[])p.Value.Clone();undo.Clear();redo.Clear();foreach(var row in state.Undo.Reverse())undo.Push(CopyHistory(row));foreach(var row in state.Redo.Reverse())redo.Push(CopyHistory(row));searchKey=null;}
     public bool Undo()=>Replay(undo,redo);
     public bool Redo()=>Replay(redo,undo);
-    public void Clear(){if(staged.Count==0)return;undo.Push(staged.ToDictionary(p=>p.Key,p=>(byte[]?)(byte[])p.Value.Clone()));staged.Clear();redo.Clear();}
-    public IReadOnlyList<StagedChange> ReviewChanges(string fileLabel="Selected file")=>staged.OrderBy(p=>p.Key).Select(p=>new StagedChange(fileLabel,"Raw / opaque (read-only)",p.Key,$"0x{Document!.Structure.Events[p.Key].Identifier:X8}",PrimitiveBytes(p.Key,true)!,PrimitiveBytes(p.Key)!)).ToArray();
+    public void Clear(){if(staged.Count==0)return;undo.Push(staged.ToDictionary(p=>p.Key,p=>(byte[]?)(byte[])p.Value.Clone()));staged.Clear();redo.Clear();searchKey=null;}
+    public IReadOnlyList<StagedChange> ReviewChanges(string fileLabel="Selected file")=>staged.OrderBy(p=>p.Key).Select(p=>new StagedChange(fileLabel,"Raw / opaque (read-only)",p.Key,$"0x{Document!.Structure.Events[p.Key].Identifier:X8}",ValueBytes(p.Key,true),ValueBytes(p.Key))).ToArray();
     public ExperimentalExportReceipt Export(string newOutputPath,string backupParent)
     {
-        var requests=staged.OrderBy(p=>p.Key).Select(p=>new PrimitiveReplacement(p.Key,PrimitiveBytes(p.Key,true)!,p.Value)).ToArray();
-        return LastExport=session.Export(requests,newOutputPath,backupParent);
+        var requests=staged.Where(p=>Document!.Structure.Events[p.Key].Tag!=15).OrderBy(p=>p.Key).Select(p=>new PrimitiveReplacement(p.Key,ValueBytes(p.Key,true),p.Value)).ToArray();
+        var texts=staged.Where(p=>Document!.Structure.Events[p.Key].Tag==15).OrderBy(p=>p.Key).Select(p=>new TextReplacement(p.Key,ValueBytes(p.Key,true),p.Value)).ToArray();
+        return LastExport=session.Export(requests,texts,newOutputPath,backupParent);
     }
     public string RestoreOriginal(CompletedOriginalBackup backup,string newDestination)=>session.RestoreOriginal(backup,newDestination);
     private void CheckIndex(int index){if(Document is null||index<0||index>=Document.Structure.Events.Count)throw new ArgumentOutOfRangeException(nameof(index));}

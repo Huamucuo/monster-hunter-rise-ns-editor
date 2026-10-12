@@ -8,6 +8,23 @@ internal static class Program
     static void Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
+        if(args.Length==2&&args[0]=="--smoke-r11")
+        {
+            UiLanguage.Initialize(Path.GetFullPath(Path.Combine(args[1],"test-preferences.json")));
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+            // The actual callback smoke needs the same persistent UI dispatcher
+            // as normal startup. A Show/DoEvents-only runner loses its Windows
+            // Forms synchronization context around nested modal message loops.
+            using var pump=new Form(){ShowInTaskbar=false,Opacity=0,Size=new(100,100)};
+            pump.Shown+=(_,_)=>pump.BeginInvoke((Action)(()=>
+            {
+                try{R11Smoke.Run(args[1]);}
+                catch(Exception e){Directory.CreateDirectory(args[1]);File.WriteAllText(Path.Combine(args[1],"r11-smoke-error.txt"),e.ToString());Environment.ExitCode=1;}
+                finally{pump.Close();}
+            }));
+            Application.Run(pump);
+            return;
+        }
         UiLanguage.Initialize(args.Length==2&&args[0] is "--smoke" or "--smoke-r9" or "--smoke-r10" or "--smoke-r10-review"?Path.GetFullPath(Path.Combine(args[1],"test-preferences.json")):null);
         if(args.Length==2&&args[0] is "--smoke" or "--smoke-r9" or "--smoke-r10" or "--smoke-r10-review") {Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);try{if(args[0]=="--smoke-r10-review")R10ReviewSmoke.Run(args[1]);else if(args[0]=="--smoke-r10")R10Smoke.Run(args[1]);else if(args[0]=="--smoke-r9")R9Smoke.Run(args[1]);else Smoke(args[1]);}catch(Exception e){Directory.CreateDirectory(args[1]);File.WriteAllText(Path.Combine(args[1],"smoke-error.txt"),e.ToString());Environment.ExitCode=1;}return;}
         Application.Run(new WorkshopForm());
