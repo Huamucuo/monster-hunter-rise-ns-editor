@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-09-27T12:31:03.5501732+00:00",
+  "admittedInputs": [
+    {
+      "file": "clean_spec/r3/SERIALIZATION.md",
+      "sha256": "D1A063D230E07CCCF6E5826A6D6378B3D415D5A6B396EB0AB8456A31DD31FCC8"
+    },
+    {
+      "file": "clean_spec/r3/TESTS.md",
+      "sha256": "D92648DA340167B001F3AEFD470395EF2DD7D5E37AF5B1F21402944D34E25F2E"
+    }
+  ]
+}

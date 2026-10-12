@@ -1,0 +1,91 @@
+{
+  "retrieved_utc": "2026-09-29T08:13:01.917948+00:00",
+  "current_repo_commit": "34c04b0681218e43ceb0ffadf611c04a18295a16",
+  "website_build_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "ca35923c693fcce065e058b5d77e229f4743e03aa75e5701bd0d7bdac7d13c4e",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/README.md"
+    },
+    {
+      "file": "LICENSE-MIT",
+      "sha256": "feb243318a46ab2fa1e9348396139b163244e6da3a78031c92be208b7ebccde2",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/LICENSE-MIT"
+    },
+    {
+      "file": "LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/LICENSE-APACHE"
+    },
+    {
+      "file": ".gitmodules",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/.gitmodules"
+    },
+    {
+      "file": "item.html",
+      "sha256": "aec99144771ac5d021c919dcbbeb9b7a966682f7d66afadd9af80e9170e529b3",
+      "url": "https://mhrise.mhrice.info/item.html"
+    },
+    {
+      "file": "skill.html",
+      "sha256": "af0a15114f1dbc9af0b8af5baebe1bba12d24f92b992e2b78002ce8d9559aa30",
+      "url": "https://mhrise.mhrice.info/skill.html"
+    },
+    {
+      "file": "about.html",
+      "sha256": "bdb6167aa8b0e872217cc2c393b76be079ef4a4425f8fa70f4dc8e5a32af5a59",
+      "url": "https://mhrise.mhrice.info/about.html"
+    },
+    {
+      "file": "mhrice.json",
+      "sha256": "3818fdef73f9d4d83c4f75a3c6286ccbdcf4555425c5c3547f4489cb887d466f",
+      "url": "https://mhrise.mhrice.info/mhrice.json"
+    },
+    {
+      "file": "reference\\LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/LICENSE-APACHE",
+      "verified_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538"
+    },
+    {
+      "file": "reference\\LICENSE-MIT",
+      "sha256": "feb243318a46ab2fa1e9348396139b163244e6da3a78031c92be208b7ebccde2",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/LICENSE-MIT",
+      "verified_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538"
+    },
+    {
+      "file": "reference\\README.md",
+      "sha256": "ca35923c693fcce065e058b5d77e229f4743e03aa75e5701bd0d7bdac7d13c4e",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/README.md",
+      "verified_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538"
+    },
+    {
+      "file": "reference\\src\\rsz\\armor.rs",
+      "sha256": "04da5e35fe1229032cb0e07ae219766bbf0e91eca79e3e0e5774f469d3285afc",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/armor.rs",
+      "verified_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538"
+    },
+    {
+      "file": "reference\\src\\rsz\\item.rs",
+      "sha256": "382f563c738965bafb75e56983c8307c82e771594e3e3e438600f3bd49f6357a",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/item.rs",
+      "verified_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538"
+    },
+    {
+      "file": "reference\\src\\rsz\\skill.rs",
+      "sha256": "ce1b855e8aa5e95b0ccca07f612136ed9d55e0116dbf6a5c302afb49b8fcbb1b",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/skill.rs",
+      "verified_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538"
+    },
+    {
+      "file": "reference\\src\\rsz\\weapon.rs",
+      "sha256": "402d62a9149d8cc310e287d2b50869418d06f00da22966ed5558c662de5d9c14",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/weapon.rs",
+      "verified_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538"
+    }
+  ],
+  "catalog_sha256": "2907935367320320c293b26f4e74f88f1c4e1993979337feb4b86c51f80711f5",
+  "r10_parameters_manifest": "parameter-sources.json"
+}

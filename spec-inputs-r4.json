@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-09-27T12:52:00.0694345+00:00",
+  "admittedInputs": [
+    {
+      "file": "clean_spec/r4/EXPORT.md",
+      "sha256": "77B16F8063138AC644970977464F9840BC303102464C1D3899F4FFEB613BEB53"
+    },
+    {
+      "file": "clean_spec/r4/CLARIFICATION.md",
+      "sha256": "5715A89513D2B737B85FC6C9B7E7D2D027F6879E8E46B6264CF5E45FDA76B487"
+    }
+  ]
+}

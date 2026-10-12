@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><AssemblyName>RiseWorkshop</AssemblyName></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Foundation.csproj" /></ItemGroup>
+  <ItemGroup>
+    <Content Condition="Exists('../data/mhrice/catalog.json')" Include="../data/mhrice/catalog.json" Link="data/mhrice/catalog.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Condition="Exists('../data/mhrice/parameter-sources.json')" Include="../data/mhrice/parameter-sources.json" Link="data/mhrice/parameter-sources.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Condition="Exists('../data/mhrice/source-hashes.json')" Include="../data/mhrice/source-hashes.json" Link="data/mhrice/source-hashes.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../DATA_SOURCES.md" Link="DATA_SOURCES.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../THIRD_PARTY_NOTICES.md" Link="THIRD_PARTY_NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../licenses/MHRice-MIT.txt" Link="licenses/MHRice-MIT.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

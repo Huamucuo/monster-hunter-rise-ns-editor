@@ -1,0 +1,29 @@
+{
+  "recordedAtUtc": "2026-09-28T01:51:05.5794404+00:00",
+  "admittedInputs": [
+    {
+      "file": "clean_spec/r5/WORKSPACE.md",
+      "sha256": "4328438CCAEC01D9CBEA579BAD7C6AAAA1E2D94F75A60457D0DFC33B2004C661"
+    },
+    {
+      "file": "clean_spec/r5/DOMAIN.md",
+      "sha256": "33B4FF77C0E017F74D90CB0C20CDE017FE29B486B118BDFDD3D2D31319D4CB95"
+    },
+    {
+      "file": "clean_spec/r5/domain-facts.json",
+      "sha256": "23ECB9EA3F6808F92BFD31952E1C15929EEB1880098BE79A859EA96F88689A8C"
+    },
+    {
+      "file": "clean_spec/r5/TALISMANS.md",
+      "sha256": "E8DD221CDDBD6B0FBC2B9E5C52F5B3779234301547A6585102413229659997F9"
+    },
+    {
+      "file": "clean_spec/r5/RANKS.md",
+      "sha256": "F598AD7D576CA1DE139150CCE8172B539FE079B45700422C5768AC790819542E"
+    },
+    {
+      "file": "clean_spec/r5/PATHS.md",
+      "sha256": "79C82A0F2D38308B21643FCA9DB66FB935B6D5A3AAD0E851E78D0882EFA5D91D"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "recordedAtUtc": "2026-09-27T12:14:34.4478806+00:00",
+  "admittedInputs": [
+    {
+      "file": "clean_spec/r2/algorithm-identity.json",
+      "sha256": "3040B1F7759629A8741BC1B057A033C42E6386FD42859D7A997B56D536E86616"
+    },
+    {
+      "file": "clean_spec/r2/ARRAY_PREFIXES.md",
+      "sha256": "8609CF690A037627BFB00FCBDF84D7F22A5301CDFECC8F8331880BB26FC2562B"
+    },
+    {
+      "file": "clean_spec/r2/array-prefix-observations.json",
+      "sha256": "A260E6E0E2E47E1AA66C8A5325A0D692901E1113AFF6B275FEA47D8315DE6871"
+    },
+    {
+      "file": "clean_spec/r2/checksum-vectors.json",
+      "sha256": "B271A80CC0A24947678C4FE9B74E78196BD4EA305DF2C563E443BC344797D24A"
+    },
+    {
+      "file": "clean_spec/r2/CHECKSUM.md",
+      "sha256": "BA95F2C9E030F6C7500429FB670A7A9DB8F491F8B6622F96174F7533BBBF15B9"
+    },
+    {
+      "file": "clean_spec/r2/COUNTING.md",
+      "sha256": "C7D58C9265FF11B23880DA639A48F3ACC20C383D4B928449E94E0AAE5573584F"
+    },
+    {
+      "file": "clean_spec/r2/FORMAT.md",
+      "sha256": "76A6EA9A910CF25CC1D22625D5E59D88E089D863387BA51F2D118B79BF68D800"
+    },
+    {
+      "file": "clean_spec/r2/structure-observations.json",
+      "sha256": "61B176915993ADD77876CA7E2E1F1E097F4EB130FA7621DB5F202B3C26769599"
+    },
+    {
+      "file": "clean_spec/r2/TESTS.md",
+      "sha256": "40FCA5804F9E139F47C21F57B741632E3EFD564BCBAC0BC69EC5D1038BB895B4"
+    }
+  ]
+}

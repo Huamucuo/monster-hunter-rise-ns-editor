@@ -1,0 +1,152 @@
+{
+  "reviewed_utc": "2026-10-05T13:04:44.930896+00:00",
+  "purpose": "REFERENCE_PARAMETERS only, not NS_STRUCTURAL_AUTHORITY",
+  "license_choice": "MIT; MHRice code/output reuse permission; underlying game rights not transferred",
+  "attribution": "Copyright (c) 2021 Weiyi Wang; MHRice https://github.com/wwylele/mhrice",
+  "official_fixed_inputs": [
+    {
+      "file": "README.md",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/README.md",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "ca35923c693fcce065e058b5d77e229f4743e03aa75e5701bd0d7bdac7d13c4e"
+    },
+    {
+      "file": "LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/LICENSE-MIT",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "feb243318a46ab2fa1e9348396139b163244e6da3a78031c92be208b7ebccde2"
+    },
+    {
+      "file": "LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/LICENSE-APACHE",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "file": "src/rsz/common.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/common.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "fd90f3eee696c65017d517b42675d5af22f4e1c1e49f02d9bdc8fd1f86c6d19d"
+    },
+    {
+      "file": "src/rsz/skill.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/skill.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "ce1b855e8aa5e95b0ccca07f612136ed9d55e0116dbf6a5c302afb49b8fcbb1b"
+    },
+    {
+      "file": "src/rsz/armor.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/armor.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "04da5e35fe1229032cb0e07ae219766bbf0e91eca79e3e0e5774f469d3285afc"
+    },
+    {
+      "file": "src/rsz/weapon.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/weapon.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "402d62a9149d8cc310e287d2b50869418d06f00da22966ed5558c662de5d9c14"
+    },
+    {
+      "file": "src/rsz/item.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/item.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "382f563c738965bafb75e56983c8307c82e771594e3e3e438600f3bd49f6357a"
+    },
+    {
+      "file": "src/extract/gen_common.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/extract/gen_common.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "0757c7dda13b3bac4262724e621ba1e9080618a5e700a47f1c7d5335f8e12152"
+    },
+    {
+      "file": "src/extract/gen_skill.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/extract/gen_skill.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "85799dd0285a0b9a5c12fd41863b74be559a8a3d3cbe1e5d2bb6b4cc6ad5e1d6"
+    },
+    {
+      "file": "src/extract/gen_armor.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/extract/gen_armor.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "0a37f298a57e1919bf75b91d0052a758d58261181d4e0b3f49c461035abdeac4"
+    },
+    {
+      "file": "src/extract/gen_weapon.rs",
+      "url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/extract/gen_weapon.rs",
+      "commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+      "sha256": "1cc4d39f75958003c8ae253dd4a353ffdcee267397c8a85d4ca7ce5fb7e62a03"
+    }
+  ],
+  "source_output_url": "https://mhrise.mhrice.info/mhrice.json",
+  "source_output_sha256": "3818fdef73f9d4d83c4f75a3c6286ccbdcf4555425c5c3547f4489cb887d466f",
+  "website_generator_commit": "bc8ef84a0fc61aad079e7ae1fcabd8a188212538",
+  "normalization": {
+    "rarity": "Already display-normalized in MHRice JSON; no additional offset",
+    "skill_maximum": "raw max_level + 1",
+    "skill_contribution": "direct positive level with nonempty skill ID",
+    "slot_histogram": "indices0..3 mean level1..4 counts; sort descending; zero pad to three"
+  },
+  "extraction": {
+    "scope": "Catalog reference parameters only; no NS mapping or save-write authority",
+    "source_sha256": "3818fdef73f9d4d83c4f75a3c6286ccbdcf4555425c5c3547f4489cb887d466f",
+    "output_sha256": "2907935367320320c293b26f4e74f88f1c4e1993979337feb4b86c51f80711f5",
+    "bytes": 6694428,
+    "counts": {
+      "Skill maxima": 147,
+      "Decoration effects": 244,
+      "Armor parameters": 1560,
+      "Weapon parameters": 3953
+    },
+    "names_and_ids_unchanged": true,
+    "unresolved_skill_name_ids": [],
+    "ignored_none_skill_levels": {
+      "1": 2,
+      "2": 2,
+      "3": 2,
+      "4": 1
+    },
+    "zero_verified_ns_mappings": true
+  },
+  "previous_manifest_url_corrections": [
+    {
+      "file": "reference\\LICENSE-APACHE",
+      "old_url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/reference\\LICENSE-APACHE",
+      "corrected_url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/LICENSE-APACHE"
+    },
+    {
+      "file": "reference\\LICENSE-MIT",
+      "old_url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/reference\\LICENSE-MIT",
+      "corrected_url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/LICENSE-MIT"
+    },
+    {
+      "file": "reference\\README.md",
+      "old_url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/reference\\README.md",
+      "corrected_url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/README.md"
+    },
+    {
+      "file": "reference\\src\\rsz\\armor.rs",
+      "old_url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/reference\\src\\rsz\\armor.rs",
+      "corrected_url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/armor.rs"
+    },
+    {
+      "file": "reference\\src\\rsz\\item.rs",
+      "old_url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/reference\\src\\rsz\\item.rs",
+      "corrected_url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/item.rs"
+    },
+    {
+      "file": "reference\\src\\rsz\\skill.rs",
+      "old_url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/reference\\src\\rsz\\skill.rs",
+      "corrected_url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/skill.rs"
+    },
+    {
+      "file": "reference\\src\\rsz\\weapon.rs",
+      "old_url": "https://raw.githubusercontent.com/wwylele/mhrice/34c04b0681218e43ceb0ffadf611c04a18295a16/reference\\src\\rsz\\weapon.rs",
+      "corrected_url": "https://raw.githubusercontent.com/wwylele/mhrice/bc8ef84a0fc61aad079e7ae1fcabd8a188212538/src/rsz/weapon.rs"
+    }
+  ],
+  "limitations": [
+    "All NS ID/name mappings UNVERIFIED",
+    "Parameters cannot authorize game-save writes",
+    "No images models descriptions or full game resources"
+  ]
+}
